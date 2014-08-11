@@ -8,7 +8,7 @@ app.debug = True
 
 @app.route('/')
 def hello_world():
-  return os.listdir('.')[4]
+  return len(os.listdir('.'))
 
 @app.route('/wand')
 def wand():
