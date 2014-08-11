@@ -1,12 +1,14 @@
-from flask import Flask
+import os
+import flask as f
 from wand.image import Image
 from wand.display import display
 
-app = Flask(__name__)
+app = f.Flask(__name__)
+app.debug = True
 
 @app.route('/')
 def hello_world():
-  return 'Iconer!'
+  return os.listdir('.')[4]
 
 @app.route('/wand')
 def wand():
