@@ -16,6 +16,7 @@ def wand():
         i.resize(int(i.width * r * 0.25), int(i.height * r * 0.25))
         i.rotate(90 * r)
         i.save(filename='image-{0}.png'.format(r))
+  return 'Done!'
 
 if __name__ == '__main__':
   app.run()
