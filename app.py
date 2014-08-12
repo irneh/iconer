@@ -39,7 +39,7 @@ def make_variants(orignameext, filepathnameext):
 
 @app.route('/')
 def index():
-  return 'index'
+  return f.render_template('upload.html')
 
 @app.route('/upload/')
 def upload():
