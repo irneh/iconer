@@ -22,7 +22,7 @@ def index():
 
 @app.route('/shell')
 def shell():
-  return subprocess.check_output('ls')
+  return subprocess.check_output(['convert', '--help'])
 
 @app.route('/upload/')
 def upload():
