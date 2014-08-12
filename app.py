@@ -1,24 +1,34 @@
-import os
 import flask as f
-from wand.image import Image
-from wand.display import display
+import flask.ext.uploads as fu
+import os
+import uuid
 
 app = f.Flask(__name__)
 app.debug = True
 
-@app.route('/')
-def hello_world():
-  return str(len(os.listdir('.')))
+app.config['UPLOADED_IMAGES_DEST'] = 'images'
+images = fu.UploadSet('images', ('png'))
+fu.configure_uploads(app, (images))
 
-@app.route('/wand')
-def wand():
-  with Image(filename='image.png') as img:
-    for r in 1, 2, 3:
-      with img.clone() as i:
-        i.resize(int(i.width * r * 0.25), int(i.height * r * 0.25))
-        i.rotate(90 * r)
-        i.save(filename='image-{0}.png'.format(r))
-  return 'Done!'
+def uuname(filename):
+  name = str(uuid.uuid4())
+  ext = os.path.splitext(filename)[1]
+  return name + ext
+
+@app.route('/')
+def index():
+  return 'hi'
+
+@app.route('/upload/')
+def upload():
+  return f.render_template('upload.html')
+
+@app.route('/receive', methods = ['GET', 'POST'])
+def receive():
+  i = f.request.files['image']
+  iname = uuname(i.filename)
+  images.save(i, None, iname)
+  return f.redirect(f.url_for('index'))
 
 if __name__ == '__main__':
   app.run()
