@@ -55,21 +55,16 @@ def make_variants(orignameext, filepathnameext, apple_names):
   os.remove(filepathnameext)
   return zippathnameext
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def index():
-  return f.render_template('upload.html')
-
-@app.route('/upload/')
-def upload():
-  return f.render_template('upload.html')
-
-@app.route('/receive', methods = ['GET', 'POST'])
-def receive():
-  i = f.request.files['image']
-  iname = uuname(i.filename)
-  images.save(i, None, iname)
-  url = make_variants(i.filename, images.path(iname), 'apple_names' in f.request.form)
-  return f.render_template('download.html', url=url)
+  if f.request.method == 'GET':
+    return f.render_template('upload.html')
+  else:
+    i = f.request.files['image']
+    iname = uuname(i.filename)
+    images.save(i, None, iname)
+    url = make_variants(i.filename, images.path(iname), 'apple_names' in f.request.form)
+    return f.render_template('download.html', url=url)
 
 if __name__ == '__main__':
   app.run()
