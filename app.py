@@ -17,20 +17,37 @@ def uuname(filename):
   ext = os.path.splitext(filename)[1]
   return name + ext
 
-def make_variants(orignameext, filepathnameext):
+def make_variants(orignameext, filepathnameext, apple_names):
   newpathname, ext = os.path.splitext(filepathnameext)
   zippathnameext = newpathname + '.zip'
   origname = os.path.splitext(orignameext)[0]
-  variants = [(1024, 1024, 1), (152, 152, 1), (120,120, 2), (120,120, 1), (114, 114, 1), (80, 80, 1), (76, 76, 1), (72, 72, 1), (58, 58, 1), (57, 57, 1), (50, 50, 1), (44, 44, 1), (29, 29, 1), (25, 25, 1), (22, 22, 1)]
+  variants = [
+    (1024, 1024, 'iTunesArtwork@2x', '512@2x'),
+    (512, 512, 'iTunesArtwork', '512'),
+    (152, 152, 'Icon-76@2x', '76@2x'),
+    (144, 144, 'Icon-72@2x', '72@2x'),
+    (120, 120, 'Icon-60@2x', '60@2x'),
+    (114, 114, 'Icon-72@2x', '72@2x'),
+    (100, 100, 'Icon-Small-50@2x', '50@2x'),
+    (80, 80, 'Icon-Small-40@2x', '40@2x'),
+    (76, 76, 'Icon-76', '76'),
+    (72, 72, 'Icon-72', '72'),
+    (58, 58, 'Icon-Small@2x', '29@2x'),
+    (57, 57, 'Icon', '57'),
+    (50, 50, 'Icon-Small-50', '50'),
+    (40, 40, 'Icon-Small-40', '40'),
+    (29, 29, 'Icon-Small', '29')]
   orig = wi.Image(filename=filepathnameext)
   imagezip = zipfile.ZipFile(zippathnameext, 'a')
   imagezip.write(filepathnameext, orignameext)
-  for w, h, x in variants:
-    mod = x > 1 and '@' + str(x) + 'x' or ''
-    clonepathnameext = newpathname + '-' + str(w) + 'x' + str(h) + mod + ext
-    zipnameext = origname + '-' + str(w) + 'x' + str(h) + mod + ext
+  for w, h, an, n in variants:
+    clonepathnameext = newpathname + '-' + n + ext
+    if apple_names:
+      zipnameext = an + ext
+    else:
+      zipnameext = origname + '-' + n + ext
     clone = orig.clone()
-    clone.resize(w * x, h * x)
+    clone.resize(w, h)
     clone.save(filename=clonepathnameext)
     imagezip.write(clonepathnameext, zipnameext)
     os.remove(clonepathnameext)
@@ -51,7 +68,7 @@ def receive():
   i = f.request.files['image']
   iname = uuname(i.filename)
   images.save(i, None, iname)
-  url = make_variants(i.filename, images.path(iname))
+  url = make_variants(i.filename, images.path(iname), 'apple_names' in f.request.form)
   return f.render_template('download.html', url=url)
 
 if __name__ == '__main__':
