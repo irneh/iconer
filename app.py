@@ -21,15 +21,16 @@ def make_variants(orignameext, filepathnameext):
   newpathname, ext = os.path.splitext(filepathnameext)
   zippathnameext = newpathname + '.zip'
   origname = os.path.splitext(orignameext)[0]
-  variants = [(1024, 1024), (152, 152), (120,120), (114, 114), (80, 80), (76, 76), (72, 72), (58, 58), (57, 57), (50, 50), (44, 44), (29, 29), (25, 25), (22, 22)]
+  variants = [(1024, 1024, 1), (152, 152, 1), (120,120, 2), (120,120, 1), (114, 114, 1), (80, 80, 1), (76, 76, 1), (72, 72, 1), (58, 58, 1), (57, 57, 1), (50, 50, 1), (44, 44, 1), (29, 29, 1), (25, 25, 1), (22, 22, 1)]
   orig = wi.Image(filename=filepathnameext)
   imagezip = zipfile.ZipFile(zippathnameext, 'a')
   imagezip.write(filepathnameext, orignameext)
-  for w, h in variants:
-    clonepathnameext = newpathname + '-' + str(w) + 'x' + str(h) + '.' + ext
-    zipnameext = origname + '-' + str(w) + 'x' + str(h) + '.' + ext
+  for w, h, x in variants:
+    mod = x > 1 and '@' + str(x) + 'x' or ''
+    clonepathnameext = newpathname + '-' + str(w) + 'x' + str(h) + mod + ext
+    zipnameext = origname + '-' + str(w) + 'x' + str(h) + mod + ext
     clone = orig.clone()
-    clone.resize(w, h)
+    clone.resize(w * x, h * x)
     clone.save(filename=clonepathnameext)
     imagezip.write(clonepathnameext, zipnameext)
     os.remove(clonepathnameext)
