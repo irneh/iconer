@@ -8,7 +8,7 @@ import zipfile
 app = f.Flask(__name__)
 app.debug = True
 
-app.config['UPLOADED_IMAGES_DEST'] = 'images'
+app.config['UPLOADED_IMAGES_DEST'] = 'static'
 images = fu.UploadSet('images', ('png'))
 fu.configure_uploads(app, (images))
 
@@ -19,10 +19,12 @@ def uuname(filename):
 
 def make_variants(orignameext, filepathnameext):
   newpathname, ext = os.path.splitext(filepathnameext)
+  zippathnameext = newpathname + '.zip'
   origname = os.path.splitext(orignameext)[0]
   variants = [(1024, 1024), (152, 152), (120,120), (114, 114), (80, 80), (76, 76), (72, 72), (58, 58), (57, 57), (50, 50), (44, 44), (29, 29), (25, 25), (22, 22)]
   orig = wi.Image(filename=filepathnameext)
-  imagezip = zipfile.ZipFile(newpathname + '.zip', 'a')
+  imagezip = zipfile.ZipFile(zippathnameext, 'a')
+  imagezip.write(filepathnameext, orignameext)
   for w, h in variants:
     clonepathnameext = newpathname + '-' + str(w) + 'x' + str(h) + '.' + ext
     zipnameext = origname + '-' + str(w) + 'x' + str(h) + '.' + ext
@@ -30,7 +32,10 @@ def make_variants(orignameext, filepathnameext):
     clone.resize(w, h)
     clone.save(filename=clonepathnameext)
     imagezip.write(clonepathnameext, zipnameext)
+    os.remove(clonepathnameext)
   imagezip.close()
+  os.remove(filepathnameext)
+  return zippathnameext
 
 @app.route('/')
 def index():
@@ -45,18 +50,8 @@ def receive():
   i = f.request.files['image']
   iname = uuname(i.filename)
   images.save(i, None, iname)
-  make_variants(i.filename, images.path(iname))
-  return '?'
-
-@app.route('/wand')
-def wand():
-  from wand.image import Image
-  with Image(filename='image.png') as img:
-    for r in 1, 2, 3:
-      with img.clone() as i:
-        i.resize(int(i.width * r * 0.25), int(i.height * r * 0.25))
-        i.rotate(90 * r)
-        i.save(filename='image{0}.png'.format(r))
+  url = make_variants(i.filename, images.path(iname))
+  return f.render_template('download.html', url=url)
 
 if __name__ == '__main__':
   app.run()
