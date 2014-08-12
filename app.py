@@ -1,6 +1,7 @@
 import flask as f
 import flask.ext.uploads as fu
 import os
+import subprocess
 import uuid
 
 app = f.Flask(__name__)
@@ -19,6 +20,10 @@ def uuname(filename):
 def index():
   return 'hi'
 
+@app.route('/shell')
+def shell():
+  return subprocess.check_output('ls')
+
 @app.route('/upload/')
 def upload():
   return f.render_template('upload.html')
@@ -29,6 +34,7 @@ def receive():
   iname = uuname(i.filename)
   images.save(i, None, iname)
   return f.redirect(f.url_for('index'))
+
 
 if __name__ == '__main__':
   app.run()
