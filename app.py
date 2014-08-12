@@ -9,7 +9,7 @@ app = f.Flask(__name__)
 app.debug = True
 
 app.config['UPLOADED_IMAGES_DEST'] = 'static'
-images = fu.UploadSet('images', ('png'))
+images = fu.UploadSet('images', ('gif', 'bmp', 'png', 'jpg', 'jpeg'))
 fu.configure_uploads(app, (images))
 
 def uuname(filename):
