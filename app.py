@@ -1,8 +1,9 @@
 import flask as f
 import flask.ext.uploads as fu
 import os
-import subprocess
 import uuid
+import wand.image as wi
+import zipfile
 
 app = f.Flask(__name__)
 app.debug = True
@@ -16,13 +17,24 @@ def uuname(filename):
   ext = os.path.splitext(filename)[1]
   return name + ext
 
+def make_variants(orignameext, filepathnameext):
+  newpathname, ext = os.path.splitext(filepathnameext)
+  origname = os.path.splitext(orignameext)[0]
+  variants = [(1024, 1024), (152, 152), (120,120), (114, 114), (80, 80), (76, 76), (72, 72), (58, 58), (57, 57), (50, 50), (44, 44), (29, 29), (25, 25), (22, 22)]
+  orig = wi.Image(filename=filepathnameext)
+  imagezip = zipfile.ZipFile(newpathname + '.zip', 'a')
+  for w, h in variants:
+    clonepathnameext = newpathname + '-' + str(w) + 'x' + str(h) + '.' + ext
+    zipnameext = origname + '-' + str(w) + 'x' + str(h) + '.' + ext
+    clone = orig.clone()
+    clone.resize(w, h)
+    clone.save(filename=clonepathnameext)
+    imagezip.write(clonepathnameext, zipnameext)
+  imagezip.close()
+
 @app.route('/')
 def index():
-  return 'hi'
-
-@app.route('/shell')
-def shell():
-  return subprocess.check_output(['convert', '--help'])
+  return 'index'
 
 @app.route('/upload/')
 def upload():
@@ -33,7 +45,8 @@ def receive():
   i = f.request.files['image']
   iname = uuname(i.filename)
   images.save(i, None, iname)
-  return f.redirect(f.url_for('index'))
+  make_variants(i.filename, images.path(iname))
+  return '?'
 
 @app.route('/wand')
 def wand():
