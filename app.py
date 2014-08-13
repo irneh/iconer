@@ -29,13 +29,13 @@ def uuname(filename):
   ext = os.path.splitext(filename)[1]
   return name + ext
 
-def make_variants(oname, nname, anames):
+def make_variants(ofile, nname, anames):
   path, ext = os.path.splitext(nname)
   zname = path + '.zip'
-  oname = os.path.splitext(oname)[0]
+  oname = os.path.splitext(ofile)[0]
   orig = wi.Image(filename=nname)
   imagezip = zipfile.ZipFile(zname, 'a')
-  imagezip.write(nname, oname)
+  imagezip.write(nname, ofile)
   for w, h, an, n in variants:
     cname = path + '-' + n + ext
     if anames:
