@@ -1,9 +1,4 @@
-## Local file.
-
 from variants import variants
-
-## Normal imports.
-
 import boto
 import flask as f
 import flask.ext.uploads as fu
@@ -12,25 +7,19 @@ import uuid
 import wand.image as wi
 import zipfile
 
-## Start me up.
-
 app = f.Flask(__name__)
 app.debug = True
 
 ## Flask-Uploads config.
-
 app.config['UPLOADED_IMAGES_DEST'] = 'tmp'
 images = fu.UploadSet('images', ('gif', 'bmp', 'png', 'jpg', 'jpeg'))
 fu.configure_uploads(app, (images))
 
 ## S3
-
 S3_BUCKET = os.getenv('S3_BUCKET')
 c = boto.connect_s3()
 b = c.get_bucket(S3_BUCKET)
 k = boto.s3.key.Key(b)
-
-## Codez
 
 def uuname(filename):
   name = str(uuid.uuid4())
@@ -69,9 +58,9 @@ def index():
   else:
     img = f.request.files['image']
     anames = 'use_apple_names' in f.request.form
-    img_name = uuname(img.filename)
-    images.save(img, None, img_name)
-    zname = make_variants(img.filename, images.path(img_name), anames)
+    imgname = uuname(img.filename)
+    images.save(img, None, imgname)
+    zname = make_variants(img.filename, images.path(imgname), anames)
     url = 'http://' + S3_BUCKET + '/' + zname
     return f.render_template('download.html', url=url)
 
