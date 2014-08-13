@@ -8,7 +8,7 @@ import wand.image as wi
 import zipfile
 
 app = f.Flask(__name__)
-app.debug = True
+app.debug = os.getenv('APP_DEBUG')
 
 ## Flask-Uploads config.
 app.config['UPLOADED_IMAGES_DEST'] = 'tmp'
@@ -50,6 +50,10 @@ def make_variants(ofile, nname, anames):
   os.remove(nname)
   os.remove(zname)
   return os.path.basename(zname)
+
+@app.route('/test', methods=['GET', 'POST'])
+def test():
+  return str(app.debug)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
