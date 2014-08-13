@@ -1,3 +1,9 @@
+## Local file.
+
+from variants import variants
+
+## Normal imports.
+
 import flask as f
 import flask.ext.uploads as fu
 import os
@@ -5,65 +11,56 @@ import uuid
 import wand.image as wi
 import zipfile
 
+## Start me up.
+
 app = f.Flask(__name__)
 app.debug = True
+
+## Flask-Uploads config.
 
 app.config['UPLOADED_IMAGES_DEST'] = 'static'
 images = fu.UploadSet('images', ('gif', 'bmp', 'png', 'jpg', 'jpeg'))
 fu.configure_uploads(app, (images))
+
+## Codez
 
 def uuname(filename):
   name = str(uuid.uuid4())
   ext = os.path.splitext(filename)[1]
   return name + ext
 
-def make_variants(orignameext, filepathnameext, apple_names):
-  newpathname, ext = os.path.splitext(filepathnameext)
-  zippathnameext = newpathname + '.zip'
-  origname = os.path.splitext(orignameext)[0]
-  variants = [
-    (1024, 1024, 'iTunesArtwork@2x', '512@2x'),
-    (512, 512, 'iTunesArtwork', '512'),
-    (152, 152, 'Icon-76@2x', '76@2x'),
-    (144, 144, 'Icon-72@2x', '72@2x'),
-    (120, 120, 'Icon-60@2x', '60@2x'),
-    (114, 114, 'Icon-72@2x', '72@2x'),
-    (100, 100, 'Icon-Small-50@2x', '50@2x'),
-    (80, 80, 'Icon-Small-40@2x', '40@2x'),
-    (76, 76, 'Icon-76', '76'),
-    (72, 72, 'Icon-72', '72'),
-    (58, 58, 'Icon-Small@2x', '29@2x'),
-    (57, 57, 'Icon', '57'),
-    (50, 50, 'Icon-Small-50', '50'),
-    (40, 40, 'Icon-Small-40', '40'),
-    (29, 29, 'Icon-Small', '29')]
-  orig = wi.Image(filename=filepathnameext)
-  imagezip = zipfile.ZipFile(zippathnameext, 'a')
-  imagezip.write(filepathnameext, orignameext)
+def make_variants(oname, nname, anames):
+  path, ext = os.path.splitext(nname)
+  zname = path + '.zip'
+  oname = os.path.splitext(oname)[0]
+  orig = wi.Image(filename=nname)
+  imagezip = zipfile.ZipFile(zname, 'a')
+  imagezip.write(nname, oname)
   for w, h, an, n in variants:
-    clonepathnameext = newpathname + '-' + n + ext
-    if apple_names:
+    cname = path + '-' + n + ext
+    if anames:
       zipnameext = an + ext
     else:
-      zipnameext = origname + '-' + n + ext
+      zipnameext = oname + '-' + n + ext
     clone = orig.clone()
     clone.resize(w, h)
-    clone.save(filename=clonepathnameext)
-    imagezip.write(clonepathnameext, zipnameext)
-    os.remove(clonepathnameext)
+    clone.save(filename=cname)
+    imagezip.write(cname, zipnameext)
+    os.remove(cname)
   imagezip.close()
-  os.remove(filepathnameext)
-  return zippathnameext
+  os.remove(nname)
+  return zname
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
   if f.request.method == 'GET':
     return f.render_template('upload.html')
   else:
-    i = f.request.files['image']
-    iname = uuname(i.filename)
-    images.save(i, None, iname)
-    url = make_variants(i.filename, images.path(iname), 'apple_names' in f.request.form)
+    img = f.request.files['image']
+    anames = 'use_apple_names' in f.request.form
+    img_name = uuname(img.filename)
+    images.save(img, None, img_name)
+    url = make_variants(img.filename, images.path(img_name), anames)
     return f.render_template('download.html', url=url)
 
 if __name__ == '__main__':
