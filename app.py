@@ -4,6 +4,7 @@ from variants import variants
 
 ## Normal imports.
 
+import boto
 import flask as f
 import flask.ext.uploads as fu
 import os
@@ -21,6 +22,11 @@ app.debug = True
 app.config['UPLOADED_IMAGES_DEST'] = 'static'
 images = fu.UploadSet('images', ('gif', 'bmp', 'png', 'jpg', 'jpeg'))
 fu.configure_uploads(app, (images))
+
+S3_BUCKET = os.getenv('S3_BUCKET')
+c = boto.connect_s3()
+b = c.get_bucket(S3_BUCKET)
+k = boto.s3.key.Key(b)
 
 ## Codez
 
@@ -48,8 +54,11 @@ def make_variants(ofile, nname, anames):
     imagezip.write(cname, zipnameext)
     os.remove(cname)
   imagezip.close()
+  k.key = os.path.basename(zname)
+  k.set_contents_from_filename(zname)
   os.remove(nname)
-  return zname
+  os.remove(zname)
+  return os.path.basename(zname)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -60,7 +69,8 @@ def index():
     anames = 'use_apple_names' in f.request.form
     img_name = uuname(img.filename)
     images.save(img, None, img_name)
-    url = make_variants(img.filename, images.path(img_name), anames)
+    zname = make_variants(img.filename, images.path(img_name), anames)
+    url = 'http://' + S3_BUCKET + '/' + zname
     return f.render_template('download.html', url=url)
 
 if __name__ == '__main__':
