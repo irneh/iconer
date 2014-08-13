@@ -19,9 +19,11 @@ app.debug = True
 
 ## Flask-Uploads config.
 
-app.config['UPLOADED_IMAGES_DEST'] = 'static'
+app.config['UPLOADED_IMAGES_DEST'] = 'tmp'
 images = fu.UploadSet('images', ('gif', 'bmp', 'png', 'jpg', 'jpeg'))
 fu.configure_uploads(app, (images))
+
+## S3
 
 S3_BUCKET = os.getenv('S3_BUCKET')
 c = boto.connect_s3()
@@ -63,7 +65,7 @@ def make_variants(ofile, nname, anames):
 @app.route('/', methods=['GET', 'POST'])
 def index():
   if f.request.method == 'GET':
-    return f.render_template('upload.html')
+    return f.render_template('index.html')
   else:
     img = f.request.files['image']
     anames = 'use_apple_names' in f.request.form
