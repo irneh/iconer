@@ -21,35 +21,41 @@ c = boto.connect_s3()
 b = c.get_bucket(S3_BUCKET)
 k = boto.s3.key.Key(b)
 
-def uuname(filename):
-  name = str(uuid.uuid4())
-  ext = os.path.splitext(filename)[1]
-  return name + ext
-
-def make_variants(ofile, nname, anames):
-  path, ext = os.path.splitext(nname)
-  zname = path + '.zip'
-  oname = os.path.splitext(ofile)[0]
-  orig = wi.Image(filename=nname)
-  imagezip = zipfile.ZipFile(zname, 'a')
-  imagezip.write(nname, ofile)
-  for w, h, an, n in variants:
-    cname = path + '-' + n + ext
-    if anames:
-      zipnameext = an + ext
-    else:
-      zipnameext = oname + '-' + n + ext
+def make_zip(orig_path, new_name, use_apple_names):
+  def make_variant(orig, w, h, new_name):
     clone = orig.clone()
     clone.resize(w, h)
-    clone.save(filename=cname)
-    imagezip.write(cname, zipnameext)
-    os.remove(cname)
-  imagezip.close()
-  k.key = os.path.basename(zname)
-  k.set_contents_from_filename(zname)
-  os.remove(nname)
-  os.remove(zname)
-  return os.path.basename(zname)
+    clone.save(filename=new_name)
+
+  def zip_obj(zf, obj, arcname):
+    zf.write(obj, arcname)
+    os.remove(obj)
+
+  path, ext = os.path.splitext(new_name)
+  zip_name = path + '.zip'
+  orig_name = os.path.splitext(orig_path)[0]
+
+  ## Write original into new zipfile.
+  zf = zipfile.ZipFile(zip_name, 'a')
+  zf.write(new_name, orig_path)
+
+  ## Create image Object.
+  orig = wi.Image(filename=new_name)
+  os.remove(new_name)
+
+  for w, h, apple_name, name in variants:
+    ## Figure out what to name the files in the zip
+    if use_apple_names:
+      arcname = apple_name + ext
+    else:
+      arcname = orig_name + '-' + name + ext
+    variant_name = path + '-' + name + ext
+    ## Write variants to disk then move into zip
+    make_variant(orig, w, h, variant_name)
+    zip_obj(zf, variant_name, arcname)
+
+  zf.close()
+  return zip_name
 
 @app.route('/test', methods=['GET', 'POST'])
 def test():
@@ -60,12 +66,20 @@ def index():
   if f.request.method == 'GET':
     return f.render_template('index.html')
   else:
+    ## Process incoming args
     img = f.request.files['image']
-    anames = 'use_apple_names' in f.request.form
-    imgname = uuname(img.filename)
-    images.save(img, None, imgname)
-    zname = make_variants(img.filename, images.path(imgname), anames)
-    url = 'http://' + S3_BUCKET + '/' + zname
+    use_apple_names = 'use_apple_names' in f.request.form
+    ## Save incoming file to Flask-Uploads collection and local disk.
+    localname = str(uuid.uuid4()) + os.path.splitext(img.filename)[1]
+    images.save(img, None, localname)
+    ## Render variants into zipfile
+    zipname = make_zip(img.filename, images.path(localname), use_apple_names)
+    ## Move zipfile to S3
+    k.key = os.path.basename(zipname)
+    k.set_contents_from_filename(zipname)
+    os.remove(zipname)
+    ## Return URL to S3 zipfile
+    url = 'http://' + S3_BUCKET + '/' + os.path.basename(zipname)
     return f.render_template('download.html', url=url)
 
 if __name__ == '__main__':
