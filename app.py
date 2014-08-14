@@ -57,10 +57,6 @@ def make_zip(orig_path, new_name, use_apple_names):
   zf.close()
   return zip_name
 
-@app.route('/test', methods=['GET', 'POST'])
-def test():
-  return str(app.debug)
-
 @app.route('/', methods=['GET', 'POST'])
 def index():
   if f.request.method == 'GET':
