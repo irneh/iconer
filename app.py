@@ -22,15 +22,6 @@ b = c.get_bucket(S3_BUCKET)
 k = boto.s3.key.Key(b)
 
 def make_zip(orig_path, new_name, use_apple_names):
-  def make_variant(orig, w, h, new_name):
-    clone = orig.clone()
-    clone.resize(w, h)
-    clone.save(filename=new_name)
-
-  def zip_obj(zf, obj, arcname):
-    zf.write(obj, arcname)
-    os.remove(obj)
-
   path, ext = os.path.splitext(new_name)
   zip_name = path + '.zip'
   orig_name = os.path.splitext(orig_path)[0]
@@ -50,9 +41,13 @@ def make_zip(orig_path, new_name, use_apple_names):
     else:
       arcname = orig_name + '-' + name + ext
     variant_name = path + '-' + name + ext
-    ## Write variants to disk then move into zip
-    make_variant(orig, w, h, variant_name)
-    zip_obj(zf, variant_name, arcname)
+    ## Write variants to disk
+    clone = orig.clone()
+    clone.resize(w, h)
+    clone.save(filename=variant_name)
+    ## Move variants to zip
+    zf.write(variant_name, arcname)
+    os.remove(variant_name)
 
   zf.close()
   return zip_name
