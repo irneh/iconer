@@ -1,1 +1,38 @@
-/* */
+body {
+	font-family: Arial, Helvetica;
+	background-color: #364a4e;
+}
+
+h1 {
+	font-family: 'Paytone One', sans-serif;
+	font-size: 3em;
+	color: #8ff2f6;
+	text-shadow: 3px 3px #0c2c2d;
+}
+
+label input[type="file"] {
+    position: fixed;
+    top: -1000px;
+}
+
+
+label input[type="file"] {
+    position: fixed;
+    top: -1000px;
+}
+
+/* Example custom styling */
+.upload{
+    border: 2px solid #AAA;
+    border-radius: 4px;
+    padding: 1em;
+    margin: 2px;
+    background: #DDD;
+    display: inline-block;
+}
+.upload:hover {
+    background: #CCC;
+}
+.upload:active {
+    background: #CCF;
+}
