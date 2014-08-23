@@ -1,13 +1,40 @@
 body {
-	font-family: Arial, Helvetica;
+	font-family: 'Signika', Avenir, Arial, Helvetica;
 	background-color: #364a4e;
 }
 
+header{
+	text-align: center;
+}
+
 h1 {
-	font-family: 'Paytone One', sans-serif;
-	font-size: 3em;
-	color: #8ff2f6;
-	text-shadow: 3px 3px #0c2c2d;
+	font-family: 'Righteous', sans-serif;
+	font-size: 4.5em;
+	color: #91bf5b;
+	text-shadow: -0.04em 0.04em #364a4e, -0.09em 0.09em #29383c;
+	margin-bottom: 0;
+	text-transform: uppercase;
+	letter-spacing: 0.1em;
+}
+
+header p{
+	padding-top:0;
+	margin-top:0;
+	font-size:1.16em;
+}
+
+p{
+	color: #6a919a;
+	text-align: center;
+}
+
+form {
+	background-color: #29383c;
+	width: 40%;
+	padding:2em;
+	border-radius:9px;
+	margin: 1em auto;
+	text-align: center;
 }
 
 label input[type="file"] {
@@ -21,18 +48,32 @@ label input[type="file"] {
     top: -1000px;
 }
 
-/* Example custom styling */
+/* Button custom styling */
 .upload{
-    border: 2px solid #AAA;
-    border-radius: 4px;
-    padding: 1em;
-    margin: 2px;
-    background: #DDD;
+    border-radius: 20px;
+    padding: 0.75em 2em;
+    margin: 0.5em 0 1em 0;
     display: inline-block;
+	background: #91bf5b; /* Old browsers */
+	background: -moz-linear-gradient(top, #c7ddad 0%, #91bf5b 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#c7ddad), color-stop(100%,#91bf5b)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, #c7ddad 0%,#91bf5b 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #c7ddad 0%,#91bf5b 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, #c7ddad 0%,#91bf5b 100%); /* IE10+ */
+	background: linear-gradient(to bottom, #c7ddad 0%,#91bf5b 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c7ddad', endColorstr='#91bf5b',GradientType=0 ); /* IE6-9 */
 }
 .upload:hover {
-    background: #CCC;
+	background: #91bf5b;
 }
 .upload:active {
-    background: #CCF;
+   background: #86b153;
+}
+
+footer {
+	font-size:0.75em;
+	position:absolute;
+	bottom: 10px;
+	left: 42%;
+	text-align: center;
 }
