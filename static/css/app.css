@@ -13,6 +13,7 @@ h1 {
 	color: #91bf5b;
 	text-shadow: -0.04em 0.04em #364a4e, -0.09em 0.09em #29383c;
 	margin-bottom: 0;
+	margin-top: 0.25em;
 	text-transform: uppercase;
 	letter-spacing: 0.05em;
 }
@@ -37,9 +38,10 @@ form {
 	text-align: center;
 }
 
-@media only screen and (min-device-width: 320px){
+@media only screen and (max-device-width: 480px) {
+	
 	form{
-		width:90%;
+		width:80%;
 	}
 }
 
@@ -80,6 +82,6 @@ footer {
 	font-size:0.75em;
 	position:absolute;
 	bottom: 10px;
-	left: 42%;
+	width: 100%;
 	text-align: center;
 }
