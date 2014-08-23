@@ -14,7 +14,7 @@ h1 {
 	text-shadow: -0.04em 0.04em #364a4e, -0.09em 0.09em #29383c;
 	margin-bottom: 0;
 	text-transform: uppercase;
-	letter-spacing: 0.1em;
+	letter-spacing: 0.05em;
 }
 
 header p{
@@ -30,7 +30,7 @@ p{
 
 form {
 	background-color: #29383c;
-	width: 40%;
+	width: 32em;	
 	padding:2em;
 	border-radius:9px;
 	margin: 1em auto;
