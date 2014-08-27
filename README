@@ -1,3 +1,4 @@
-Just a micro-project to give her a convenience utility. Was just a shell script
-(https://gist.github.com/irneh/587fa009bdf90de1cbc7). So now it's a "web
-service" at http://iconer.workforpizza.com.
+# Iconer
+
+Minimum viable application in 57 lines of code, at last count. Mostly just a
+convenience utility while doing mobile development.
