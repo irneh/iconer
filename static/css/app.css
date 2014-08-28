@@ -20,7 +20,7 @@ h1 {
 }
 
 .content-main {
-	width: 75%;
+	width: 90%;
 	margin: 0 auto;
 	color: #1F2B2E;
 }
@@ -34,7 +34,7 @@ p{
 
 form {
 	background-color:#2E4147;
-	padding:3em;
+	padding:3em 0;
 	border-radius:9px;
 	margin: 1em auto;
 	text-align: center;
@@ -62,13 +62,14 @@ label input[type="file"] {
 /* Button custom styling */
 .upload{
     border-radius: 5px;
-    padding: 1em 3em;
+    padding: 0.75em 1.25em;
     margin: 0.5em 0 1em 0;
     display: inline-block;
 	background: #B26735; /* Old browsers */
 	box-shadow: 0px 3px 0px #804A26;
 	text-shadow: 1px 1px 1px rgba(0,0,0,0.1);
 	letter-spacing:0.04em;
+	font-size: 1.25em;
 }
 
 .upload:hover, .upload:active {
@@ -78,9 +79,8 @@ label input[type="file"] {
 
 footer {
 	font-size:0.75em;
-	position:fixed;
-	bottom: 3px;
 	width: 100%;
 	text-align: center;
 	color: #223334;
+	text-shadow: 1px 1px 1px rgba(255,255,255,0.1);
 }
