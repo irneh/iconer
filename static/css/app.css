@@ -5,7 +5,8 @@ body {
 
 header{
 	text-align: center;
-	margin: 3em 0 2em 0;
+	margin: 3em 0 0 0;
+	padding-bottom:;
 }
 
 h1 {
@@ -14,21 +15,30 @@ h1 {
 	color: #91bf5b;
 	text-shadow: -0.04em 0.04em #364a4e, -0.09em 0.09em #29383c;
 	margin-bottom: 0;
-	margin-top: 0.25em;
 	text-transform: uppercase;
 	letter-spacing: 0.05em;
 }
 
+a:link {
+	color:#B26735;
+}
+
+a:visited {
+	color:#222A2D;
+}
+
 .content-main {
-	width: 90%;
+	width: 85%;
 	margin: 0 auto;
 	color: #FFF;
 }
 
-p{
+.content-main p{
 	text-align: center;
 	font-size: 1.1em;
 	text-shadow: 1px 1px 1px rgba(0,0,0,0.1);
+	margin-top:0;
+	color: #BED2A2;
 }
 
 form {
@@ -40,12 +50,6 @@ form {
 	color: #fff;
 }
 
-@media only screen and (max-device-width: 480px) {
-	
-	form{
-		width:80%;
-	}
-}
 
 label input[type="file"] {
     position: fixed;
@@ -62,9 +66,9 @@ label input[type="file"] {
 .upload{
     border-radius: 5px;
     padding: 0.75em 1.25em;
-    margin: 0.5em 0 1em 0;
+    margin: 0 0 1em 0;
     display: inline-block;
-	background: #B26735; /* Old browsers */
+	background: #B26735;
 	box-shadow: 0px 3px 0px #804A26;
 	text-shadow: 1px 1px 1px rgba(0,0,0,0.1);
 	letter-spacing:0.01em;
@@ -80,6 +84,6 @@ footer {
 	font-size:0.85em;
 	width: 100%;
 	text-align: center;
-	color: #223334;
-	text-shadow: 1px 1px 1px rgba(255,255,255,0.1);
+	color: #222A2D;
+	text-shadow: 1px 1px 0px rgba(0,0,0,0.1);
 }
