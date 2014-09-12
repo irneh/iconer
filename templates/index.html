@@ -2,16 +2,21 @@
 {% block body %}
 <header>
 	<h1>Iconer</h1>
-	<p>Upload a design file to generate icons in all the sizes you need for iOS 7</p>
 </header>
 
-<form method='POST' enctype=multipart/form-data action='/'>
-	 <label class="upload"><input type='file' name='image' onchange='javascript:this.form.submit();'>Choose File</label><br/>
-	 <label><input type='checkbox' name='use_apple_names' value='use_apple_names' checked>Use Apple naming convention</label>
-</form>
+<div class="content-main">
+	<p>Get all the app icon sizes for iOS</p>
 
-<p>We don't keep your images.</p>
+	<form method='POST' enctype=multipart/form-data action='/'>
+		 <label class="upload"><input type='file' name='image' onchange='javascript:this.form.submit();'>Upload Image</label><br/>
+		 <label><input type='checkbox' name='use_apple_names' value='use_apple_names' checked>Use Apple naming convention</label>
+	</form>
+
+</div>
+
 <footer>
-	Made in the USA by Work for Pizza Inc.
+	<p>We don't keep your images.<br/>
+
+	Made in the USA by Work for Pizza Inc.</p>
 </footer>
 {% endblock %}
